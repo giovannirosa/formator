@@ -1,0 +1,176 @@
+package view;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import controller.Serializer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import model.TRequestModel;
+import model.TStudentModel;
+
+public class ComissionerScreen extends Stage {
+
+	VBox geralPane = new VBox(20);
+	HBox buttonPane = new HBox(20);
+	HBox infoPane = new HBox(20);
+	
+	Label studLabel = new Label("Students:");
+	TableView<TStudentModel> studTable = new TableView<>();
+	TableColumn<TStudentModel, String> studCol = new TableColumn<>("Student");
+	ObservableList<TStudentModel> studData;
+	
+	Label reqLabel = new Label("Requests:");
+	TableView<TRequestModel> reqTable = new TableView<>();
+	TableColumn<TRequestModel, Integer> idCol = new TableColumn<>("ID");
+	TableColumn<TRequestModel, String> descCol = new TableColumn<>("Description");
+	TableColumn<TRequestModel, String> typeCol = new TableColumn<>("Type");
+	TableColumn<TRequestModel, Double> hoursCol = new TableColumn<>("Hours");
+	TableColumn<TRequestModel, String> statusCol = new TableColumn<>("Status");
+	ObservableList<TRequestModel> data;
+	
+	Button openBut = new Button("Open Receipt");
+	Button reviewBut = new Button("Review");
+	
+	Label totLabel = new Label();
+	Label pendLabel = new Label();
+	Label appLabel = new Label();
+	Label rejLabel = new Label();
+	Label needLabel = new Label();
+	double tot = 0;
+	double pen = 0;
+	double app = 0;
+	double rej = 0;
+	
+	public static Map<String,List<TRequestModel>> map = new HashMap<>();
+	
+	@SuppressWarnings("unchecked")
+	public ComissionerScreen() {
+		this.setTitle("Formator");
+		this.setResizable(false);
+		
+		data = loadData();
+		setActions();
+		loadTotal();
+		
+		studTable.getColumns().addAll(studCol);
+		studTable.setItems(studData);
+		
+		reqTable.getColumns().addAll(idCol,descCol,typeCol,hoursCol,statusCol);
+		reqTable.setItems(data);
+		
+		idCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,Integer>("id"));
+		idCol.setPrefWidth(40);
+		idCol.setResizable(false);
+		descCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("desc"));
+		typeCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("type"));
+		hoursCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,Double>("hours"));
+		statusCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("status"));
+		
+		idCol.prefWidthProperty().bind(reqTable.widthProperty().multiply(0.10));
+		descCol.prefWidthProperty().bind(reqTable.widthProperty().multiply(0.30));
+		typeCol.prefWidthProperty().bind(reqTable.widthProperty().multiply(0.20));
+		hoursCol.prefWidthProperty().bind(reqTable.widthProperty().multiply(0.20));
+		statusCol.prefWidthProperty().bind(reqTable.widthProperty().multiply(0.20));
+		reqTable.requestLayout();
+		
+		infoPane.getChildren().addAll(totLabel,pendLabel,appLabel,rejLabel,needLabel);
+		infoPane.setAlignment(Pos.CENTER);
+		
+
+		buttonPane.getChildren().addAll(openBut,reviewBut);
+		buttonPane.setAlignment(Pos.CENTER);
+		
+		geralPane.setPadding(new Insets(20));
+		geralPane.setAlignment(Pos.CENTER);
+		geralPane.getChildren().addAll(reqLabel,reqTable,infoPane,buttonPane);
+		
+		geralPane.setPrefSize(800, 600);
+		Scene scene = new Scene(geralPane);
+		
+		this.setScene(scene);
+	}
+	
+	private void loadTotal() {
+		tot = 0;
+		pen = 0;
+		app = 0;
+		rej = 0;
+		for (TRequestModel m : data) {
+			tot += m.getHours();
+			if (m.getStatus().equals("Pending")) {
+				pen += m.getHours();
+			} else if (m.getStatus().equals("Approved")) {
+				app += m.getHours();
+			} else if (m.getStatus().equals("Rejected")) {
+				rej += m.getHours();
+			}
+		}
+		totLabel.setText("Total: "+tot);
+		pendLabel.setText("Pending: "+pen);
+		appLabel.setText("Approved: "+app);
+		rejLabel.setText("Rejected: "+rej);
+		needLabel.setText("Needed: "+(480-app));
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ObservableList<TRequestModel> loadData() {
+		Object o = Serializer.deserialize("Submits");
+		if (o instanceof Map)
+			map = (Map<String,List<TRequestModel>>) o;
+		
+		
+		List<TRequestModel> list = map.get(Login.user.getName());
+		
+		if (list == null)
+			return FXCollections.observableArrayList();
+		
+		for (TRequestModel m : list) {
+			m.load();
+		}
+		
+		return FXCollections.observableArrayList(list);
+	}
+	
+	private void setActions() {
+		openBut.setOnAction(e -> {
+			if (reqTable.getSelectionModel().getSelectedItem() == null) {
+				Factory.showWarning("Please select a record!");
+	        	return;
+			}
+			if (Desktop.isDesktopSupported()) {
+			    try {
+			        File file = reqTable.getSelectionModel().getSelectedItem().getFile();
+			        if (file == null) {
+			        	Factory.showWarning("None file attached!");
+			        	return;
+			        }
+			        Runtime.getRuntime().exec("evince "+file.getAbsolutePath());
+//			        Desktop.getDesktop().open(myFile);
+			    } catch (IOException ex) {
+			        // no application registered for PDFs
+			    }
+			}
+		});
+		
+	}
+}

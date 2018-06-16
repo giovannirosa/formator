@@ -1,0 +1,47 @@
+1480960066448	Rename local variable 'l'
+1480960562600	Infer generic type arguments
+1480965787257	Delete element
+1480969991708	Rename field 'tableData'
+1480970916432	Rename field 'submitBut'
+1480972708544	Delete element
+1480972712016	Delete element
+1480972969681	Delete element
+1481049384732	Delete element
+1481049398069	Delete element
+1481052279284	Rename method 'loadData'
+1481054441601	Delete element
+1481054464002	Rename type 'RequestsPane'
+1481055105070	Rename type 'InfoSection'
+1481056163319	Rename type 'NewUsers'
+1481056648543	Rename field 'commentsField'
+1481057457678	Rename field 'studData'
+1481057692128	Delete element
+1481059990968	Rename type 'UserTable'
+1481060050535	Delete element
+1481060122764	Rename field 'student'
+1481060300655	Rename field 'studCol'
+1481060661997	Rename field 'newUser'
+1481060671351	Rename field 'manUser'
+1481386399623	Rename type 'SubmitScreen'
+1481387848906	Encapsulate field 'role'
+1481388420318	Rename type 'AddScreen'
+1481389324770	Delete element
+1481389364820	Delete element
+1481389370424	Delete element
+1481389398966	Delete element
+1481389402096	Delete element
+1481394189988	Rename method 'saveLoginData'
+1481395998333	Move compilation units
+1481396038256	Move compilation units
+1481396074140	Move compilation units
+1481396083995	Delete element
+1481396092964	Move compilation unit
+1481396098465	Move compilation unit
+1481396117750	Rename type 'Login'
+1481396513707	Move compilation units
+1481396533952	Move compilation units
+1481396545823	Move compilation units
+1481396598624	Move compilation units
+1481396697583	Move compilation units
+1481396703276	Delete element
+1481396825370	Delete element

@@ -1,0 +1,93 @@
+package view;
+
+import java.io.File;
+
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import model.TRequestModel;
+
+public class SubmitScreen extends Stage {
+
+	VBox geralPane = new VBox(20);
+	GridPane inputPane = new GridPane();
+	HBox buttonPane = new HBox(20);
+	
+	Label descLabel = new Label("Description:");
+	Label typeLabel = new Label("Type:");
+	Label hoursLabel = new Label("Hours:");
+	Label receiptLabel = new Label("Receipt:");
+	
+	TextField descField = new TextField();
+	TextField typeField = new TextField();
+	TextField hoursField = new TextField();
+	TextField receiptField = new TextField();
+	
+	Button uploadBut = new Button("Upload");
+	Button confirmBut = new Button("Confirm");
+	Button cancelBut = new Button("Cancel");
+	
+	public SubmitScreen(Window owner, ObservableList<TRequestModel> data) {
+		this.setTitle("Submit");
+		this.setResizable(false);
+		this.initStyle(StageStyle.UTILITY);
+		
+		setActions();
+		receiptField.setEditable(false);
+	
+		inputPane.setVgap(20);
+		inputPane.setHgap(20);
+		inputPane.add(descLabel, 0, 0);
+		inputPane.add(descField, 1, 0);
+		inputPane.add(typeLabel, 0, 1);
+		inputPane.add(typeField, 1, 1);
+		inputPane.add(hoursLabel, 0, 2);
+		inputPane.add(hoursField, 1, 2);
+		inputPane.add(receiptLabel, 0, 3);
+		inputPane.add(receiptField, 1, 3);
+		inputPane.add(uploadBut, 2, 3);
+		
+		buttonPane.setAlignment(Pos.CENTER);
+		buttonPane.getChildren().addAll(confirmBut,cancelBut);
+		
+		geralPane.setAlignment(Pos.CENTER);
+		geralPane.setPadding(new Insets(20));
+		geralPane.getChildren().addAll(inputPane,buttonPane);
+		
+		Scene scene = new Scene(geralPane);
+		
+		this.setScene(scene);
+	}
+	
+	private void setActions() {
+		uploadBut.setOnAction(e -> {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Open Resource File");
+			File file = fileChooser.showOpenDialog(this);
+			if (file == null)
+				return;
+			if (file.getName().contains(".pdf")) {
+				receiptField.setText(file.getName());
+			} else {
+				Factory.showWarning("Please upload PDF archives only!");
+			}
+		});
+		
+		confirmBut.setOnAction(e -> {
+			
+		});
+		
+		cancelBut.setOnAction(e -> this.close());
+	}
+}

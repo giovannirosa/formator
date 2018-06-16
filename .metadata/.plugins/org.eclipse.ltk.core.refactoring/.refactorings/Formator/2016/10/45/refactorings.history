@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Formator/src/view/ufpr_alta.jpg&apos; to &apos;ufpr.jpg&apos;" description="Rename resource &apos;ufpr_alta.jpg&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/view/ufpr_alta.jpg" name="ufpr.jpg" stamp="1477948008801" updateReferences="true"/>
+</session>

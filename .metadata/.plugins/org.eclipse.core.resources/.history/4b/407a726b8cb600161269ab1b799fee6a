@@ -1,0 +1,91 @@
+package view;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.ResizeFeatures;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.TRequestModel;
+
+public class StudentScreen extends Stage {
+
+	VBox geralPane = new VBox(20);
+	HBox buttonPane = new HBox(20);
+	
+	Label reqLabel = new Label("Requests:");
+	TableView<TRequestModel> reqTable = new TableView<>();
+	TableColumn<TRequestModel, Integer> idCol = new TableColumn<>("ID");
+	TableColumn<TRequestModel, String> descCol = new TableColumn<>("Description");
+	TableColumn<TRequestModel, String> typeCol = new TableColumn<>("Type");
+	TableColumn<TRequestModel, Double> hoursCol = new TableColumn<>("Hours");
+	TableColumn<TRequestModel, String> statusCol = new TableColumn<>("Status");
+	ObservableList<TRequestModel> data = FXCollections.observableArrayList();
+	
+	Button openBut = new Button("Open");
+	Button submitBut = new Button("Submit");
+	
+	@SuppressWarnings("unchecked")
+	public StudentScreen() {
+		this.setTitle("Formator");
+		this.setResizable(false);
+		
+		setActions();
+		
+		reqTable.getColumns().addAll(idCol,descCol,typeCol,hoursCol,statusCol);
+		reqTable.setItems(data);
+		
+		idCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,Integer>("id"));
+		idCol.setStyle("-fx-alignment: CENTER;");
+		idCol.setPrefWidth(40);
+		idCol.setResizable(false);
+		descCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("desc"));
+		descCol.setStyle("-fx-alignment: CENTER;");
+		typeCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("type"));
+		typeCol.setStyle("-fx-alignment: CENTER;");
+		hoursCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,Double>("hours"));
+		hoursCol.setStyle("-fx-alignment: CENTER;");
+		statusCol.setCellValueFactory(new PropertyValueFactory<TRequestModel,String>("status"));
+		statusCol.setStyle("-fx-alignment: CENTER;");
+		
+		data.add(new TRequestModel(0, "Aula sobre Linux", "Aula", 4.5, "Pending"));
+		
+		reqTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+		reqTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		reqTable.requestLayout();
+
+		reqTable.setColumnResizePolicy(new Callback<TableView.ResizeFeatures, Boolean>() {
+		  @Override
+		  public Boolean call(ResizeFeatures p) {
+		     return true;
+		  }
+		});
+		
+		buttonPane.getChildren().addAll(openBut,submitBut);
+		buttonPane.setAlignment(Pos.CENTER);
+		
+		geralPane.setPadding(new Insets(20));
+		geralPane.setAlignment(Pos.CENTER);
+		geralPane.getChildren().addAll(reqLabel,reqTable,buttonPane);
+		
+		geralPane.setPrefSize(800, 600);
+		Scene scene = new Scene(geralPane);
+		
+		this.setScene(scene);
+	}
+	
+	private void setActions() {
+		submitBut.setOnAction(e -> {
+			new SubmitScreen().show();
+		});
+	}
+}
